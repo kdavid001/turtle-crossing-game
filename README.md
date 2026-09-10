@@ -4,6 +4,8 @@ A simple, beginner-friendly arcade game built with Python's turtle module. Guide
 
 ![Game screenshot](Screenshot.png)
 
+> If you add an animated demo (demo.gif) to the repository root, the README will show it here instead of the static screenshot. Example: `![Demo](demo.gif)`
+
 ## Features
 - Move a player turtle from bottom to top of the screen to score points.
 - Randomly spawning cars that travel across the screen at increasing speed.
@@ -22,9 +24,46 @@ A simple, beginner-friendly arcade game built with Python's turtle module. Guide
 ## Controls
 - Up arrow — move the turtle forward
 
+Notes on controls and how to add more
+- The game currently binds only the Up arrow (see `main.py`). To add more movement (left, right, back), add methods to `Player` and bind them in `main.py`.
+
+Example: add these methods to `player.py`:
+
+```python
+# inside Player class in player.py
+def go_left(self):
+    self.setx(self.xcor() - MOVE_DISTANCE)
+
+def go_right(self):
+    self.setx(self.xcor() + MOVE_DISTANCE)
+
+def go_back(self):
+    self.backward(MOVE_DISTANCE)
+```
+
+Then bind in `main.py`:
+
+```python
+screen.onkey(player.go_left, "Left")
+screen.onkey(player.go_right, "Right")
+screen.onkey(player.go_back, "Down")
+```
+
+Careful: because turtle graphics uses absolute coordinates, you may want to clamp x-position to the visible window bounds.
+
 ## How to run
 1. Make sure you have Python 3 installed: `python --version`
-2. From the repository root, run:
+2. (Optional) Create and activate a virtual environment:
+
+```bash
+python -m venv venv
+# macOS / Linux
+source venv/bin/activate
+# Windows (PowerShell)
+venv\Scripts\Activate.ps1
+```
+
+3. From the repository root, run:
 
 ```bash
 python main.py
@@ -32,8 +71,60 @@ python main.py
 
 The game opens in a new window using the turtle graphics library.
 
+## Development & Contributing
+Thanks for taking an interest! Contributions are welcome — bug fixes, small features, or simple tests are especially helpful.
+
+Guidelines
+- Fork the repository, create a feature branch, and open a pull request.
+- Keep changes focused and include a short description of why the change was made.
+- If adding features that change the public API (e.g., `Player` methods), update the README.
+
+Running tests (recommended)
+- This project doesn't ship with tests yet — here's how to add and run them.
+
+1. Install pytest in your dev environment:
+
+```bash
+pip install pytest
+```
+
+2. Add tests under a `tests/` directory. Example test for the Player start position:
+
+```python
+# tests/test_player.py
+from player import Player
+
+
+def test_player_starts_at_starting_position():
+    p = Player()
+    assert p.position() == (0.0, -280.0)
+```
+
+3. Run tests from the repository root:
+
+```bash
+pytest
+```
+
+Notes on editing the game
+- The main game loop is in `main.py`. To change car spawn rates or speeds, edit `car_manager.py`.
+- To tweak the appearance (shapes, colors), update the Turtle configuration in the related files.
+
+## Adding a demo GIF
+To replace the static screenshot with an animated demo:
+1. Record your screen while playing (tools: OBS Studio, Peek, ShareX).
+2. Crop/trim and export a small GIF (keep resolution and length small — <2–3s is best).
+3. Add the file to the repository root as `demo.gif` and push.
+4. Update the README image line (or replace `Screenshot.png`) to:
+
+```markdown
+![Demo](demo.gif)
+```
+
+Large GIFs can make the repo heavy; consider hosting the recording externally (e.g., GitHub releases or an image host) and embed the external URL in README.
+
 ## Notes
 - This is a small learning project; feel free to fork and experiment with features such as multiple lanes, lives, or power-ups.
 
 ---
-Updated README to include description, run instructions, and a screenshot.
+Updated README: added development and contributing guidance, test instructions, expanded controls documentation, and demo GIF instructions.
